@@ -66,7 +66,7 @@
 			};
 			var addRightCurve = function() {
 				var start = {
-					x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth - 1,
+					x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth,
 					y: dimen.padding + dimen.trackWidth / 2
 				};
 				var end = {
@@ -99,7 +99,7 @@
 			};
 			var addLeftCurve = function() {
 				var start = {
-					x: dimen.padding + dimen.section.width + 2,
+					x: dimen.padding + dimen.section.width,
 					y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth / 2
 				};
 				var end = {
@@ -155,10 +155,22 @@
 						} else {
 							ctx.fillStyle = theme['track' + (track + 1)];
 						}
-						var width = dimen.section.width * 7;
+						var width = dimen.section.width * 7 + 1;
 						if (section !== 1) {
 							width += dimen.spaceWidth;
 						}
+
+						// fill gaps;
+						if (section === 0) {
+							width += 1;
+						} else if (section === 1) {
+							width += 1;
+							x -= 1;
+						} else if (section === 2) {
+							width += 2;
+							x -= 1;
+						}
+
 						ctx.fillRect(x, y, width, track === 2 ? dimen.trackWidth : dimen.trackWidth + 1);
 					}
 				}
@@ -183,7 +195,7 @@
 				};
 				var drawRightCurve = function() {
 					var start = {
-						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth - 1,
+						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth,
 						y: dimen.padding + dimen.trackWidth / 2
 					};
 					var end = {
@@ -194,7 +206,7 @@
 				};
 				var drawLeftCurve = function() {
 					var start = {
-						x: dimen.padding + dimen.section.width + 1,
+						x: dimen.padding + dimen.section.width,
 						y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth / 2
 					};
 					var end = {
