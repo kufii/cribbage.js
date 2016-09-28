@@ -312,7 +312,7 @@
 			drawStraightTracks();
 			drawCurvedTracks();
 			drawStart();
-			//drawSeperators();
+			drawSeperators();
 			drawMarkers();
 		};
 
