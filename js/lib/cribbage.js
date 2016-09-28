@@ -51,8 +51,8 @@
 
 		var calculateCoords = function() {
 			var clearCoords = function() {
-				for (var i = 1; i <= 3; i++) {
-					coords['player' + i] = [];
+				for (var player in coords) {
+					coords[player] = [];
 				}
 			};
 			var addStart = function() {
@@ -306,8 +306,8 @@
 		};
 
 		var drawHoles = function() {
-			for (var player = 1; player <= 3; player++) {
-				coords['player' + player].forEach(function(coord) {
+			for (var player in coords) {
+				coords[player].forEach(function(coord) {
 					ctx.beginPath();
 					ctx.fillStyle = theme.hole;
 					ctx.arc(coord.x, coord.y, dimen.pegRadius, 0, 360);
