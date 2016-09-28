@@ -27,7 +27,8 @@
 			fontSize: cfg.theme.fontSize || 13,
 			fontFamily: cfg.theme.fontFamily || 'Arial, Helvetica, sans serif',
 			fontColor: cfg.theme.fontColor || 'black',
-			pegPadding: cfg.theme.pegPadding || 5,
+			holePadding: cfg.theme.holePadding || 5,
+			pegPadding: cfg.theme.pegPadding || 4,
 			boardPadding: cfg.theme.boardPadding || 8
 		};
 
@@ -38,6 +39,21 @@
 			player3: []
 		};
 
+		var pegs = {
+			player1: {
+				old: 0,
+				current: 1
+			},
+			player2: {
+				old: 0,
+				current: 1
+			},
+			player3: {
+				old: 0,
+				current: 1
+			}
+		};
+
 		var calculateDimensions = function() {
 			dimen.padding = theme.fontSize + theme.boardPadding;
 			dimen.section = {
@@ -46,6 +62,7 @@
 			};
 			dimen.spaceWidth = dimen.section.width / 5;
 			dimen.trackWidth = dimen.section.height / 3;
+			dimen.holeRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2 - theme.holePadding;
 			dimen.pegRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2 - theme.pegPadding;
 		};
 
@@ -103,7 +120,7 @@
 					for (var i = 35; i >= 0; i--) {
 						coords['player' + (player + 1)].push({
 							x: dimen.padding + dimen.section.width + dimen.spaceWidth * i + dimen.spaceWidth / 2,
-							y: dimen.padding * 3 + dimen.section.height * 2 + dimen.trackWidth * player + dimen.trackWidth / 2
+							y: dimen.padding * 3 + dimen.section.height * 2 + dimen.trackWidth * (2 - player) + dimen.trackWidth / 2
 						});
 					}
 				}
@@ -310,9 +327,21 @@
 				coords[player].forEach(function(coord) {
 					ctx.beginPath();
 					ctx.fillStyle = theme.hole;
-					ctx.arc(coord.x, coord.y, dimen.pegRadius, 0, 360);
+					ctx.arc(coord.x, coord.y, dimen.holeRadius, 0, 360);
 					ctx.fill();
 				});
+			}
+		};
+
+		var drawPegs = function() {
+			for (var player in pegs) {
+				for (var peg in pegs[player]) {
+					var coord = coords[player][pegs[player][peg]];
+					ctx.beginPath();
+					ctx.fillStyle = theme[player];
+					ctx.arc(coord.x, coord.y, dimen.pegRadius, 0, 360);
+					ctx.fill();
+				}
 			}
 		};
 
@@ -320,6 +349,39 @@
 			drawBackground();
 			drawTrack();
 			drawHoles();
+			drawPegs();
+		};
+
+		var getDistance = function(x, y, coord) {
+			var xdiff = Math.pow(Math.abs(coord.x - x),2);
+			var ydiff = Math.pow(Math.abs(coord.y - y),2);
+			return Math.sqrt(xdiff + ydiff);
+		};
+
+		var move = function(player, position) {
+			player = pegs['player' + (player + 1)];
+			if (player.old === position || player.new === position) return;
+			if (position > player.current) {
+				player.old = player.current;
+				player.current = position;
+			} else if (position > player.old) {
+				player.current = position;
+			} else {
+				player.current = player.old;
+				player.old = position;
+			}
+			draw();
+		};
+
+		var handleClick = function(x, y) {
+			for (var player = 0; player < 3; player++) {
+				coords['player' + (player + 1)].some(function(coord, index) {
+					if (getDistance(x, y, coord) <= dimen.holeRadius) {
+						move(player, index);
+						return true;
+					}
+				});
+			}
 		};
 
 		var init = function() {
@@ -329,8 +391,14 @@
 		};
 		init();
 
+		canvas.onclick = function(e) {
+			var bounds = canvas.getBoundingClientRect();
+			handleClick(e.clientX - bounds.left, e.clientY - bounds.top);
+		};
+
 		return {
-			canvas: canvas
+			canvas: canvas,
+			move: move
 		};
 	};
 })();
