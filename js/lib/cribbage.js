@@ -133,20 +133,12 @@
 			};
 			var addThirdStraight = function() {
 				for (var player = 0; player < 3; player++) {
-					for (var i = 0; i < 35; i++) {
+					for (var i = 0; i < 36; i++) {
 						coords['player' + (player + 1)].push({
 							x: dimen.padding + dimen.section.width + dimen.spaceWidth * i + dimen.spaceWidth / 2,
 							y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth * player + dimen.trackWidth / 2
 						});
 					}
-				}
-			};
-			var addWin = function() {
-				for (var player = 0; player < 3; player++) {
-					coords['player' + (player + 1)].push({
-						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth / 2,
-						y: dimen.padding * 2 + dimen.section.height + dimen.section.height / 2
-					});
 				}
 			};
 			clearCoords();
@@ -156,7 +148,6 @@
 			addSecondStraight();
 			addLeftCurve();
 			addThirdStraight();
-			addWin();
 		};
 
 		var drawBackground = function() {
