@@ -25,7 +25,10 @@
 			track3: cfg.theme.track3 || '#282828',
 			hole: cfg.theme.hole || 'lightgray',
 			fontSize: cfg.theme.fontSize || 13,
-			pegPadding: cfg.theme.pegPadding || 4
+			fontFamily: cfg.theme.fontFamily || 'Arial, Helvetica, sans serif',
+			fontColor: cfg.theme.fontColor || 'black',
+			pegPadding: cfg.theme.pegPadding || 5,
+			boardPadding: cfg.theme.boardPadding || 18
 		};
 
 		var dimen = {};
@@ -36,7 +39,7 @@
 		};
 
 		var calculateDimensions = function() {
-			dimen.padding = theme.fontSize;
+			dimen.padding = theme.fontSize + theme.boardPadding;
 			dimen.section = {
 				width: Math.floor((canvas.width - (dimen.padding * 2)) / 10),
 				height: Math.floor((canvas.height - (dimen.padding * 4)) / 3)
@@ -181,6 +184,7 @@
 				}
 			};
 			var drawCurvedTracks = function() {
+				ctx.lineWidth = dimen.trackWidth;
 				var drawRightCurve = function() {
 					var start = {
 						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth - 1,
@@ -194,7 +198,6 @@
 						var radius = (end.y - start.y) / 2;
 						ctx.beginPath();
 						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  4.7, Math.PI * 0.5);
-						ctx.lineWidth = dimen.trackWidth;
 						ctx.strokeStyle = theme['track' + (track + 1)];
 						ctx.stroke();
 					}
@@ -212,7 +215,6 @@
 						var radius = (end.y - start.y) / 2;
 						ctx.beginPath();
 						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  4.7, Math.PI * 0.5, true);
-						ctx.lineWidth = dimen.trackWidth;
 						ctx.strokeStyle = theme['track' + (track + 1)];
 						ctx.stroke();
 					}
@@ -230,14 +232,14 @@
 				}
 			};
 			var drawSeperators = function() {
+				ctx.lineWidth = 1;
+				ctx.strokeStyle = theme.background;
 				var drawVertical = function() {
 					for (var i = 0; i < 8; i++) {
 						var x = dimen.padding + dimen.section.width + dimen.section.width * i;
 						ctx.beginPath();
 						ctx.moveTo(x, 0);
 						ctx.lineTo(x, canvas.height);
-						ctx.lineWidth = 1;
-						ctx.strokeStyle = theme.background;
 						ctx.stroke();
 					}
 				};
@@ -247,17 +249,65 @@
 					ctx.beginPath();
 					ctx.moveTo(x, y);
 					ctx.lineTo(canvas.width, y);
-					ctx.lineWidth = 1;
-					ctx.strokeStyle = theme.background;
 					ctx.stroke();
 				};
 				drawVertical();
 				drawHorizontal();
 			};
+			var drawMarkers = function() {
+				ctx.font = theme.fontSize + 'px ' + theme.fontFamily;
+				ctx.fillStyle = theme.fontColor;
+				ctx.textAlign = 'center';
+				ctx.textBaseline='middle';
+				var offset = theme.fontSize / 2 + theme.boardPadding / 2;
+				var drawFirstRow = function() {
+					for (var i = 1; i < 8; i++) {
+						var x = dimen.padding + dimen.section.width + dimen.section.width * i;
+						var y = dimen.padding - offset;
+						ctx.fillText(5 * i, x, y);
+					}
+				};
+				var drawCurve = function() {
+					var start = {
+						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth - 1,
+						y: dimen.padding + dimen.trackWidth / 2
+					};
+					var end = {
+						x: start.x,
+						y: dimen.padding * 3 + dimen.section.height * 3 - dimen.trackWidth / 2
+					};
+					var radius = (end.y - start.y) / 2;
+					var x = start.x + radius + dimen.trackWidth / 2 + offset;
+					var y = start.y + radius;
+					ctx.save();
+					ctx.rotate(Math.PI / 2);
+					ctx.fillText('40', y, -x);
+					ctx.restore();
+				};
+				var drawSecondRow = function() {
+					for (var i = 0; i < 8; i++) {
+						var x = dimen.padding + dimen.section.width + dimen.section.width * (7 - i);
+						var y = dimen.padding * 3 + dimen.section.height * 3 + offset;
+						ctx.fillText(45 + 5 * i, x, y);
+					}
+				};
+				var drawThirdRow = function() {
+					for (var i = 0; i < 8; i++) {
+						var x = dimen.padding + dimen.section.width + dimen.section.width * i;
+						var y = dimen.padding * 2 + dimen.section.height - offset;
+						ctx.fillText(85 + 5 * i, x, y);
+					}
+				};
+				drawFirstRow();
+				drawCurve();
+				drawSecondRow();
+				drawThirdRow();
+			};
 			drawStraightTracks();
 			drawCurvedTracks();
 			drawStart();
 			drawSeperators();
+			drawMarkers();
 		};
 
 		var drawHoles = function() {
