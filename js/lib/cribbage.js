@@ -429,6 +429,11 @@
 			return theme['player' + (player + 1)];
 		};
 
+		var getScore = function(player) {
+			var p = pegs['player' + (player + 1)];
+			return Math.max(0, p.current - 1);
+		};
+
 		var init = function() {
 			reset(true);
 			setTheme(cfg.theme);
@@ -450,6 +455,7 @@
 			getPegPositions: getPegPositions,
 			getPegColor: getPegColor,
 			setTheme: setTheme,
+			getScore: getScore,
 			reset: reset
 		};
 	};
