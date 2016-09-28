@@ -188,9 +188,16 @@
 						var radius = (end.y - start.y) / 2;
 						ctx.beginPath();
 						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  Math.PI * 1.5, Math.PI * 0.5);
-						ctx.lineWidth = track === 2 ? dimen.trackWidth : dimen.trackWidth + 1;
+						ctx.lineWidth = dimen.trackWidth;
 						ctx.strokeStyle = theme['track' + (track + 1)];
 						ctx.stroke();
+						// close gap
+						if (track !== 2) {
+							ctx.beginPath();
+							ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track) - dimen.trackWidth / 2,  Math.PI * 1.5, Math.PI * 0.5);
+							ctx.lineWidth = 1;
+							ctx.stroke();
+						}
 					}
 				};
 				var drawLeftCurve = function() {
@@ -206,9 +213,16 @@
 						var radius = (end.y - start.y) / 2;
 						ctx.beginPath();
 						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  Math.PI * 1.5, Math.PI * 0.5, true);
-						ctx.lineWidth = track === 2 ? dimen.trackWidth : dimen.trackWidth + 1;
+						ctx.lineWidth = dimen.trackWidth;
 						ctx.strokeStyle = theme['track' + (track + 1)];
 						ctx.stroke();
+						// close gap
+						if (track !== 2) {
+							ctx.beginPath();
+							ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track) - dimen.trackWidth / 2,  Math.PI * 1.5, Math.PI * 0.5, true);
+							ctx.lineWidth = 1;
+							ctx.stroke();
+						}
 					}
 				};
 				drawRightCurve();
@@ -220,7 +234,7 @@
 					var y = dimen.padding + (dimen.trackWidth * track);
 					ctx.fillStyle = theme['track' + (track + 1)];
 					var width = dimen.spaceWidth * 2;
-					ctx.fillRect(x, y, width, dimen.trackWidth);
+					ctx.fillRect(x, y, width, track === 2 ? dimen.trackWidth : dimen.trackWidth + 1);
 				}
 			};
 			var drawSeperators = function() {
@@ -298,7 +312,7 @@
 			drawStraightTracks();
 			drawCurvedTracks();
 			drawStart();
-			drawSeperators();
+			//drawSeperators();
 			drawMarkers();
 		};
 
