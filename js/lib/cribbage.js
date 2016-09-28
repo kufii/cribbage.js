@@ -175,6 +175,23 @@
 				}
 			};
 			var drawCurvedTracks = function() {
+				var drawCurve = function(start, end, counterClockwise) {
+					for (var track = 0; track < 3; track++) {
+						var radius = (end.y - start.y) / 2;
+						ctx.beginPath();
+						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
+						ctx.lineWidth = dimen.trackWidth;
+						ctx.strokeStyle = theme['track' + (track + 1)];
+						ctx.stroke();
+						// close gap
+						if (track !== 2) {
+							ctx.beginPath();
+							ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track) - dimen.trackWidth / 2,  Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
+							ctx.lineWidth = 1;
+							ctx.stroke();
+						}
+					}
+				};
 				var drawRightCurve = function() {
 					var start = {
 						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth,
@@ -184,21 +201,7 @@
 						x: start.x,
 						y: dimen.padding * 3 + dimen.section.height * 3 - dimen.trackWidth / 2
 					};
-					for (var track = 0; track < 3; track++) {
-						var radius = (end.y - start.y) / 2;
-						ctx.beginPath();
-						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  Math.PI * 1.5, Math.PI * 0.5);
-						ctx.lineWidth = dimen.trackWidth;
-						ctx.strokeStyle = theme['track' + (track + 1)];
-						ctx.stroke();
-						// close gap
-						if (track !== 2) {
-							ctx.beginPath();
-							ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track) - dimen.trackWidth / 2,  Math.PI * 1.5, Math.PI * 0.5);
-							ctx.lineWidth = 1;
-							ctx.stroke();
-						}
-					}
+					drawCurve(start, end);
 				};
 				var drawLeftCurve = function() {
 					var start = {
@@ -209,21 +212,7 @@
 						x: start.x,
 						y: dimen.padding * 3 + dimen.section.height * 3 - dimen.trackWidth / 2
 					};
-					for (var track = 0; track < 3; track++) {
-						var radius = (end.y - start.y) / 2;
-						ctx.beginPath();
-						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  Math.PI * 1.5, Math.PI * 0.5, true);
-						ctx.lineWidth = dimen.trackWidth;
-						ctx.strokeStyle = theme['track' + (track + 1)];
-						ctx.stroke();
-						// close gap
-						if (track !== 2) {
-							ctx.beginPath();
-							ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track) - dimen.trackWidth / 2,  Math.PI * 1.5, Math.PI * 0.5, true);
-							ctx.lineWidth = 1;
-							ctx.stroke();
-						}
-					}
+					drawCurve(start, end, true);
 				};
 				drawRightCurve();
 				drawLeftCurve();
