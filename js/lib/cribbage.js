@@ -28,7 +28,7 @@
 			fontFamily: cfg.theme.fontFamily || 'Arial, Helvetica, sans serif',
 			fontColor: cfg.theme.fontColor || 'black',
 			pegPadding: cfg.theme.pegPadding || 5,
-			boardPadding: cfg.theme.boardPadding || 18
+			boardPadding: cfg.theme.boardPadding || 8
 		};
 
 		var dimen = {};
