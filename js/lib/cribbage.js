@@ -170,15 +170,14 @@
 						if (section !== 1) {
 							width += dimen.spaceWidth;
 						}
-						ctx.fillRect(x, y, width, dimen.trackWidth);
+						ctx.fillRect(x, y, width, track === 2 ? dimen.trackWidth : dimen.trackWidth + 1);
 					}
 				}
 			};
 			var drawCurvedTracks = function() {
-				ctx.lineWidth = dimen.trackWidth;
 				var drawRightCurve = function() {
 					var start = {
-						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth - 1,
+						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth,
 						y: dimen.padding + dimen.trackWidth / 2
 					};
 					var end = {
@@ -188,14 +187,15 @@
 					for (var track = 0; track < 3; track++) {
 						var radius = (end.y - start.y) / 2;
 						ctx.beginPath();
-						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  4.7, Math.PI * 0.5);
+						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  Math.PI * 1.5, Math.PI * 0.5);
+						ctx.lineWidth = track === 2 ? dimen.trackWidth : dimen.trackWidth + 1;
 						ctx.strokeStyle = theme['track' + (track + 1)];
 						ctx.stroke();
 					}
 				};
 				var drawLeftCurve = function() {
 					var start = {
-						x: dimen.padding + dimen.section.width + 2,
+						x: dimen.padding + dimen.section.width,
 						y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth / 2
 					};
 					var end = {
@@ -205,7 +205,8 @@
 					for (var track = 0; track < 3; track++) {
 						var radius = (end.y - start.y) / 2;
 						ctx.beginPath();
-						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  4.7, Math.PI * 0.5, true);
+						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  Math.PI * 1.5, Math.PI * 0.5, true);
+						ctx.lineWidth = track === 2 ? dimen.trackWidth : dimen.trackWidth + 1;
 						ctx.strokeStyle = theme['track' + (track + 1)];
 						ctx.stroke();
 					}
