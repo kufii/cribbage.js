@@ -15,44 +15,16 @@
 		var ctx = canvas.getContext('2d');
 
 		if (!cfg.theme) cfg.theme = {};
-		var theme = {
-			background: cfg.theme.background || 'white',
-			player1: cfg.theme.player1 || 'green',
-			player2: cfg.theme.player2 || 'blue',
-			player3: cfg.theme.player3 || 'red',
-			track1: cfg.theme.track3 || '#646464',
-			track2: cfg.theme.track2 || '#464646',
-			track3: cfg.theme.track3 || '#282828',
-			hole: cfg.theme.hole || 'lightgray',
-			fontSize: cfg.theme.fontSize || 13,
-			fontFamily: cfg.theme.fontFamily || 'Arial, Helvetica, sans serif',
-			fontColor: cfg.theme.fontColor || 'black',
-			holePadding: cfg.theme.holePadding || 5,
-			pegPadding: cfg.theme.pegPadding || 4,
-			boardPadding: cfg.theme.boardPadding || 8
-		};
-
+		var theme = {};
 		var dimen = {};
 		var coords = {
 			player1: [],
 			player2: [],
 			player3: []
 		};
+		var pegs = {};
 
-		var pegs = {
-			player1: {
-				old: 0,
-				current: 1
-			},
-			player2: {
-				old: 0,
-				current: 1
-			},
-			player3: {
-				old: 0,
-				current: 1
-			}
-		};
+		var enabled = true;
 
 		var calculateDimensions = function() {
 			dimen.padding = theme.fontSize + theme.boardPadding;
@@ -359,18 +331,36 @@
 		};
 
 		var move = function(player, position) {
-			player = pegs['player' + (player + 1)];
-			if (player.old === position || player.new === position) return;
-			if (position > player.current) {
-				player.old = player.current;
-				player.current = position;
-			} else if (position > player.old) {
-				player.current = position;
+			var p = pegs['player' + (player + 1)];
+			if (p.old === position || p.new === position) return;
+			if (cfg.onmoving) {
+				// allow the move to be cancelled by an onmoving event handler
+				if (cfg.onmoving(player, p.current, position)) return;
+			}
+			if (position > p.current) {
+				p.old = p.current;
+				p.current = position;
+			} else if (position > p.old) {
+				p.current = position;
 			} else {
-				player.current = player.old;
-				player.old = position;
+				p.current = p.old;
+				p.old = position;
 			}
 			draw();
+			if (cfg.onmove) {
+				cfg.onmove(player, p.old, p.current);
+			}
+			if (cfg.onwin && position === 122) {
+				cfg.onwin(player);
+			}
+		};
+
+		var getPegPositions = function(player) {
+			var pegs = pegs['player' + (player + 1)];
+			return {
+				old: pegs.old,
+				current: pegs.current
+			};
 		};
 
 		var handleClick = function(x, y) {
@@ -384,21 +374,83 @@
 			}
 		};
 
-		var init = function() {
+		var reset = function(nodraw) {
+			pegs = {
+				player1: {
+					old: 0,
+					current: 1
+				},
+				player2: {
+					old: 0,
+					current: 1
+				},
+				player3: {
+					old: 0,
+					current: 1
+				}
+			};
+			if (!nodraw) {
+				draw();
+			}
+		};
+
+		var disable = function() {
+			enabled = false;
+		};
+
+		var enable = function() {
+			enabled = true;
+		};
+
+		var setTheme = function(obj) {
+			if (!obj) obj = {};
+			theme = {
+				background: obj.background || 'white',
+				player1: obj.player1 || 'green',
+				player2: obj.player2 || 'blue',
+				player3: obj.player3 || 'red',
+				track1: obj.track3 || '#646464',
+				track2: obj.track2 || '#464646',
+				track3: obj.track3 || '#282828',
+				hole: obj.hole || 'lightgray',
+				fontSize: obj.fontSize || 13,
+				fontFamily: obj.fontFamily || 'Arial, Helvetica, sans serif',
+				fontColor: obj.fontColor || 'black',
+				holePadding: obj.holePadding || 5,
+				pegPadding: obj.pegPadding || 4,
+				boardPadding: obj.boardPadding || 8
+			};
 			calculateDimensions();
 			calculateCoords();
 			draw();
 		};
+
+		var getPegColor = function(player) {
+			return theme['player' + (player + 1)];
+		};
+
+		var init = function() {
+			reset(true);
+			setTheme(cfg.theme);
+		};
 		init();
 
 		canvas.onclick = function(e) {
-			var bounds = canvas.getBoundingClientRect();
-			handleClick(e.clientX - bounds.left, e.clientY - bounds.top);
+			if (enabled) {
+				var bounds = canvas.getBoundingClientRect();
+				handleClick(e.clientX - bounds.left, e.clientY - bounds.top);
+			}
 		};
 
 		return {
 			canvas: canvas,
-			move: move
+			disable: disable,
+			enable: enable,
+			move: move,
+			getPegPositions: getPegPositions,
+			getPegColor: getPegColor,
+			setTheme: setTheme,
+			reset: reset
 		};
 	};
 })();
