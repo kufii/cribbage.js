@@ -356,10 +356,10 @@
 		};
 
 		var getPegPositions = function(player) {
-			var pegs = pegs['player' + (player + 1)];
+			var p = pegs['player' + (player + 1)];
 			return {
-				old: pegs.old,
-				current: pegs.current
+				old: p.old,
+				current: p.current
 			};
 		};
 
