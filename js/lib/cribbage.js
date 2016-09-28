@@ -183,7 +183,7 @@
 				};
 				var drawRightCurve = function() {
 					var start = {
-						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth,
+						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth - 1,
 						y: dimen.padding + dimen.trackWidth / 2
 					};
 					var end = {
@@ -194,7 +194,7 @@
 				};
 				var drawLeftCurve = function() {
 					var start = {
-						x: dimen.padding + dimen.section.width,
+						x: dimen.padding + dimen.section.width + 1,
 						y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth / 2
 					};
 					var end = {
@@ -363,14 +363,26 @@
 			};
 		};
 
-		var handleClick = function(x, y) {
+		var getHole = function(x, y) {
+			var hole;
 			for (var player = 0; player < 3; player++) {
-				coords['player' + (player + 1)].some(function(coord, index) {
+				if (coords['player' + (player + 1)].some(function(coord, index) {
 					if (getDistance(x, y, coord) <= dimen.holeRadius) {
-						move(player, index);
+						hole = {
+							player: player,
+							position: index
+						};
 						return true;
 					}
-				});
+				})) break;
+			}
+			return hole;
+		};
+
+		var handleClick = function(x, y) {
+			var hole = getHole(x, y);
+			if (hole) {
+				move(hole.player, hole.position);
 			}
 		};
 
@@ -416,8 +428,8 @@
 				fontSize: obj.fontSize || 13,
 				fontFamily: obj.fontFamily || 'Arial, Helvetica, sans serif',
 				fontColor: obj.fontColor || 'black',
-				holePadding: obj.holePadding || 5,
-				pegPadding: obj.pegPadding || 4,
+				holePadding: obj.holePadding || 8,
+				pegPadding: obj.pegPadding || 6,
 				boardPadding: obj.boardPadding || 8
 			};
 			calculateDimensions();
@@ -444,6 +456,15 @@
 			if (enabled) {
 				var bounds = canvas.getBoundingClientRect();
 				handleClick(e.clientX - bounds.left, e.clientY - bounds.top);
+			}
+		};
+
+		canvas.onmousemove = function(e) {
+			var bounds = canvas.getBoundingClientRect();
+			if (getHole(e.clientX - bounds.left, e.clientY - bounds.top)) {
+				canvas.style.cursor = 'pointer';
+			} else {
+				canvas.style.cursor = 'auto';
 			}
 		};
 
