@@ -14,7 +14,22 @@
 
 		var ctx = canvas.getContext('2d');
 
-		if (!cfg.theme) cfg.theme = {};
+		var defaultTheme = {
+			background: 'white',
+			player1: 'green',
+			player2: 'blue',
+			player3: 'red',
+			track1: '#646464',
+			track2: '#464646',
+			track3: '#282828',
+			hole: 'lightgray',
+			fontSize: 13,
+			fontFamily: 'Arial, Helvetica, sans serif',
+			fontColor: 'black',
+			holePadding: 8,
+			pegPadding: 6,
+			boardPadding: 8
+		};
 		var theme = {};
 		var dimen = {};
 		var coords = {
@@ -40,8 +55,6 @@
 			var maxRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2;
 			dimen.holeRadius = Math.max(0, maxRadius - theme.holePadding);
 			dimen.pegRadius = Math.max(0, maxRadius - theme.pegPadding);
-
-			console.log(Math.min(dimen.spaceWidth, dimen.trackWidth) / 2, dimen.pegRadius);
 
 			// important coordinates
 			dimen.coords = {};
@@ -430,22 +443,22 @@
 
 		var setTheme = function(obj) {
 			if (!obj) obj = {};
-			theme = {
-				background: obj.background || 'white',
-				player1: obj.player1 || 'green',
-				player2: obj.player2 || 'blue',
-				player3: obj.player3 || 'red',
-				track1: obj.track3 || '#646464',
-				track2: obj.track2 || '#464646',
-				track3: obj.track3 || '#282828',
-				hole: obj.hole || 'lightgray',
-				fontSize: (typeof obj.fontSize !== 'undefined') ? obj.fontSize : 13,
-				fontFamily: obj.fontFamily || 'Arial, Helvetica, sans serif',
-				fontColor: obj.fontColor || 'black',
-				holePadding: (typeof obj.holePadding !== 'undefined') ? obj.holePadding : 8,
-				pegPadding: (typeof obj.pegPadding !== 'undefined') ? obj.pegPadding : 6,
-				boardPadding: (typeof obj.boardPadding !== 'undefined') ? obj.boardPadding : 8
-			};
+			theme = {};
+			for (var property in defaultTheme) {
+				theme[property] = (typeof obj[property] !== 'undefined') ? obj[property] : defaultTheme[property];
+			}
+			calculateDimensions();
+			calculateCoords();
+			draw();
+		};
+
+		var updateTheme = function(obj) {
+			if (!obj) obj = {};
+			for (var property in obj) {
+				if (typeof defaultTheme[property] !== 'undefined') {
+					theme[property] = obj[property];
+				}
+			}
 			calculateDimensions();
 			calculateCoords();
 			draw();
@@ -490,6 +503,7 @@
 			getPegPositions: getPegPositions,
 			getPegColor: getPegColor,
 			setTheme: setTheme,
+			updateTheme: updateTheme,
 			getScore: getScore,
 			reset: reset
 		};
