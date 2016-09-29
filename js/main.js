@@ -31,7 +31,7 @@
 			alert('Player ' + (player + 1) + ' wins!');
 			cribbage.disable();
 			cribbage.updateTheme({
-				background: cribbage.getPegColor(player)
+				background: cribbage.getTheme('player' + (player + 1))
 			});
 			clearData();
 		}
