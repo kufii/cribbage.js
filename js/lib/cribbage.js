@@ -28,9 +28,12 @@
 
 		var calculateDimensions = function() {
 			dimen.padding = theme.fontSize + theme.boardPadding;
+			var height = canvas.height - (dimen.padding * 4);
+			var curveWidth = (height / 3) + (dimen.padding / 2) + (height / 2) + dimen.padding;
+			var width = canvas.width - curveWidth - dimen.padding * 2;
 			dimen.section = {
-				width: Math.floor((canvas.width - (dimen.padding * 2)) / 10),
-				height: Math.floor((canvas.height - (dimen.padding * 4)) / 3)
+				width: Math.floor(width / 36 * 5),
+				height: Math.floor(height / 3)
 			};
 			dimen.spaceWidth = dimen.section.width / 5;
 			dimen.trackWidth = dimen.section.height / 3;
@@ -48,7 +51,7 @@
 				for (var player = 0; player < 3; player++) {
 					for (var i = 0; i < 2; i++) {
 						coords['player' + (player + 1)].push({
-							x: dimen.padding + dimen.spaceWidth * 2 + dimen.spaceWidth * i + dimen.spaceWidth / 2,
+							x: dimen.padding + dimen.section.height + dimen.padding / 2 - dimen.spaceWidth * 3 + dimen.spaceWidth * i + dimen.spaceWidth / 2,
 							y: dimen.padding + dimen.trackWidth * player + dimen.trackWidth / 2
 						});
 					}
@@ -58,7 +61,7 @@
 				for (var player = 0; player < 3; player++) {
 					for (var i = 0; i < 36; i++) {
 						coords['player' + (player + 1)].push({
-							x: dimen.padding + dimen.section.width + dimen.spaceWidth * i + dimen.spaceWidth / 2,
+							x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.spaceWidth * i + dimen.spaceWidth / 2,
 							y: dimen.padding + dimen.trackWidth * player + dimen.trackWidth / 2
 						});
 					}
@@ -66,7 +69,7 @@
 			};
 			var addRightCurve = function() {
 				var start = {
-					x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth,
+					x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * 7 + dimen.spaceWidth,
 					y: dimen.padding + dimen.trackWidth / 2
 				};
 				var end = {
@@ -91,7 +94,7 @@
 				for (var player = 0; player < 3; player++) {
 					for (var i = 35; i >= 0; i--) {
 						coords['player' + (player + 1)].push({
-							x: dimen.padding + dimen.section.width + dimen.spaceWidth * i + dimen.spaceWidth / 2,
+							x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.spaceWidth * i + dimen.spaceWidth / 2,
 							y: dimen.padding * 3 + dimen.section.height * 2 + dimen.trackWidth * (2 - player) + dimen.trackWidth / 2
 						});
 					}
@@ -99,7 +102,7 @@
 			};
 			var addLeftCurve = function() {
 				var start = {
-					x: dimen.padding + dimen.section.width,
+					x: dimen.padding + dimen.section.height + dimen.padding / 2,
 					y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth / 2
 				};
 				var end = {
@@ -124,7 +127,7 @@
 				for (var player = 0; player < 3; player++) {
 					for (var i = 0; i < 36; i++) {
 						coords['player' + (player + 1)].push({
-							x: dimen.padding + dimen.section.width + dimen.spaceWidth * i + dimen.spaceWidth / 2,
+							x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.spaceWidth * i + dimen.spaceWidth / 2,
 							y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth * player + dimen.trackWidth / 2
 						});
 					}
@@ -148,7 +151,7 @@
 			var drawStraightTracks = function() {
 				for(var section = 0; section < 3; section++) {
 					for (var track = 0; track < 3; track++) {
-						var x = dimen.padding + dimen.section.width;
+						var x = dimen.padding + dimen.section.height + dimen.padding / 2;
 						var y = dimen.padding + (dimen.padding * section) + (dimen.section.height * section) + (dimen.trackWidth * track);
 						if (section === 2) {
 							ctx.fillStyle = theme['track' + (3 - track)];
@@ -195,7 +198,7 @@
 				};
 				var drawRightCurve = function() {
 					var start = {
-						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth,
+						x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * 7 + dimen.spaceWidth,
 						y: dimen.padding + dimen.trackWidth / 2
 					};
 					var end = {
@@ -206,7 +209,7 @@
 				};
 				var drawLeftCurve = function() {
 					var start = {
-						x: dimen.padding + dimen.section.width,
+						x: dimen.padding + dimen.section.height + dimen.padding / 2,
 						y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth / 2
 					};
 					var end = {
@@ -220,7 +223,7 @@
 			};
 			var drawStart = function() {
 				for (var track = 0; track < 3; track++) {
-					var x = dimen.padding + dimen.spaceWidth * 2;
+					var x = dimen.padding + dimen.section.height + dimen.padding / 2 - dimen.spaceWidth * 3;
 					var y = dimen.padding + (dimen.trackWidth * track);
 					ctx.fillStyle = theme['track' + (track + 1)];
 					var width = dimen.spaceWidth * 2;
@@ -232,7 +235,7 @@
 				ctx.strokeStyle = theme.background;
 				var drawVertical = function() {
 					for (var i = 0; i < 8; i++) {
-						var x = dimen.padding + dimen.section.width + dimen.section.width * i;
+						var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * i;
 						ctx.beginPath();
 						ctx.moveTo(x, 0);
 						ctx.lineTo(x, canvas.height);
@@ -240,7 +243,7 @@
 					}
 				};
 				var drawHorizontal = function() {
-					var x = dimen.padding + dimen.section.width * 8;
+					var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * 7;
 					var y = dimen.padding * 2 + dimen.section.height + dimen.section.height / 2;
 					ctx.beginPath();
 					ctx.moveTo(x, y);
@@ -258,14 +261,14 @@
 				var offset = theme.fontSize / 2 + theme.boardPadding / 2;
 				var drawFirstRow = function() {
 					for (var i = 1; i < 8; i++) {
-						var x = dimen.padding + dimen.section.width + dimen.section.width * i;
+						var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * i;
 						var y = dimen.padding - offset;
 						ctx.fillText(5 * i, x, y);
 					}
 				};
 				var drawCurve = function() {
 					var start = {
-						x: dimen.padding + dimen.section.width * 8 + dimen.spaceWidth - 1,
+						x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * 7 + dimen.spaceWidth - 1,
 						y: dimen.padding + dimen.trackWidth / 2
 					};
 					var end = {
@@ -282,14 +285,14 @@
 				};
 				var drawSecondRow = function() {
 					for (var i = 0; i < 8; i++) {
-						var x = dimen.padding + dimen.section.width + dimen.section.width * (7 - i);
+						var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * (7 - i);
 						var y = dimen.padding * 3 + dimen.section.height * 3 + offset;
 						ctx.fillText(45 + 5 * i, x, y);
 					}
 				};
 				var drawThirdRow = function() {
 					for (var i = 0; i < 8; i++) {
-						var x = dimen.padding + dimen.section.width + dimen.section.width * i;
+						var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * i;
 						var y = dimen.padding * 2 + dimen.section.height - offset;
 						ctx.fillText(85 + 5 * i, x, y);
 					}
