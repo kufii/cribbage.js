@@ -37,8 +37,11 @@
 			};
 			dimen.spaceWidth = dimen.section.width / 5;
 			dimen.trackWidth = dimen.section.height / 3;
-			dimen.holeRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2 - theme.holePadding;
-			dimen.pegRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2 - theme.pegPadding;
+			var maxRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2;
+			dimen.holeRadius = Math.max(0, maxRadius - theme.holePadding);
+			dimen.pegRadius = Math.max(0, maxRadius - theme.pegPadding);
+
+			console.log(Math.min(dimen.spaceWidth, dimen.trackWidth) / 2, dimen.pegRadius);
 
 			// important coordinates
 			dimen.coords = {};
@@ -436,12 +439,12 @@
 				track2: obj.track2 || '#464646',
 				track3: obj.track3 || '#282828',
 				hole: obj.hole || 'lightgray',
-				fontSize: obj.fontSize || 13,
+				fontSize: (typeof obj.fontSize !== 'undefined') ? obj.fontSize : 13,
 				fontFamily: obj.fontFamily || 'Arial, Helvetica, sans serif',
 				fontColor: obj.fontColor || 'black',
-				holePadding: obj.holePadding || 8,
-				pegPadding: obj.pegPadding || 6,
-				boardPadding: obj.boardPadding || 8
+				holePadding: (typeof obj.holePadding !== 'undefined') ? obj.holePadding : 8,
+				pegPadding: (typeof obj.pegPadding !== 'undefined') ? obj.pegPadding : 6,
+				boardPadding: (typeof obj.boardPadding !== 'undefined') ? obj.boardPadding : 8
 			};
 			calculateDimensions();
 			calculateCoords();
