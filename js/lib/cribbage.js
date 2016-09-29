@@ -464,8 +464,12 @@
 			draw();
 		};
 
-		var getPegColor = function(player) {
-			return theme['player' + (player + 1)];
+		var getTheme = function(property) {
+			if (property) {
+				return theme[property];
+			} else {
+				return theme;
+			}
 		};
 
 		var getScore = function(player) {
@@ -501,9 +505,9 @@
 			enable: enable,
 			move: move,
 			getPegPositions: getPegPositions,
-			getPegColor: getPegColor,
 			setTheme: setTheme,
 			updateTheme: updateTheme,
+			getTheme: getTheme,
 			getScore: getScore,
 			reset: reset
 		};
