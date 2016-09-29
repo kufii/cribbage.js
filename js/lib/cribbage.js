@@ -39,6 +39,40 @@
 			dimen.trackWidth = dimen.section.height / 3;
 			dimen.holeRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2 - theme.holePadding;
 			dimen.pegRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2 - theme.pegPadding;
+
+			// important coordinates
+			dimen.coords = {};
+			dimen.coords.start = {
+				x: dimen.padding + dimen.section.height + dimen.padding / 2 - dimen.spaceWidth * 3,
+				y: dimen.padding,
+				width: dimen.spaceWidth * 2
+			};
+			dimen.coords.leftCurve = {
+				x: dimen.coords.start.x + dimen.coords.start.width + dimen.spaceWidth,
+				y: dimen.padding * 2 + dimen.padding / 2 + dimen.section.height * 2,
+				radius: dimen.section.height + dimen.padding / 2 - dimen.trackWidth / 2
+			};
+			dimen.coords.firstStraight = {
+				x: dimen.padding + dimen.coords.leftCurve.radius + dimen.trackWidth / 2,
+				y: dimen.padding,
+				width: dimen.section.width * 7 + dimen.spaceWidth
+			};
+			dimen.coords.secondStraight = {
+				x: dimen.coords.firstStraight.x,
+				y: dimen.coords.firstStraight.y + dimen.padding * 2 + dimen.section.height * 2,
+				width: dimen.coords.firstStraight.width
+			};
+			dimen.coords.thirdStraight = {
+				x: dimen.coords.firstStraight.x,
+				y: dimen.coords.firstStraight.y + dimen.padding + dimen.section.height,
+				width: dimen.coords.firstStraight.width - dimen.spaceWidth
+			};
+			dimen.coords.rightCurve = {
+				x: dimen.coords.firstStraight.x + dimen.coords.firstStraight.width,
+				y: dimen.coords.thirdStraight.y + dimen.section.height / 2,
+				radius: dimen.section.height + dimen.section.height / 2 + dimen.padding - dimen.trackWidth / 2
+			};
+
 		};
 
 		var calculateCoords = function() {
@@ -51,8 +85,8 @@
 				for (var player = 0; player < 3; player++) {
 					for (var i = 0; i < 2; i++) {
 						coords['player' + (player + 1)].push({
-							x: dimen.padding + dimen.section.height + dimen.padding / 2 - dimen.spaceWidth * 3 + dimen.spaceWidth * i + dimen.spaceWidth / 2,
-							y: dimen.padding + dimen.trackWidth * player + dimen.trackWidth / 2
+							x: dimen.coords.start.x + dimen.spaceWidth * i + dimen.spaceWidth / 2,
+							y: dimen.coords.start.y + dimen.trackWidth * player + dimen.trackWidth / 2
 						});
 					}
 				}
@@ -61,30 +95,22 @@
 				for (var player = 0; player < 3; player++) {
 					for (var i = 0; i < 36; i++) {
 						coords['player' + (player + 1)].push({
-							x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.spaceWidth * i + dimen.spaceWidth / 2,
-							y: dimen.padding + dimen.trackWidth * player + dimen.trackWidth / 2
+							x: dimen.coords.firstStraight.x + dimen.spaceWidth * i + dimen.spaceWidth / 2,
+							y: dimen.coords.firstStraight.y + dimen.trackWidth * player + dimen.trackWidth / 2
 						});
 					}
 				}
 			};
 			var addRightCurve = function() {
-				var start = {
-					x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * 7 + dimen.spaceWidth,
-					y: dimen.padding + dimen.trackWidth / 2
-				};
-				var end = {
-					x: start.x,
-					y: dimen.padding * 3 + dimen.section.height * 3 - dimen.trackWidth / 2
-				};
 				var points = 8;
 				var step = Math.PI * 2 / (points * 2);
 				for (var player = 0; player < 3; player++) {
-					var radius = (end.y - start.y) / 2;
+					var radius = dimen.coords.rightCurve.radius;
 					var current = step * points - step / 2;
 					for (var i = 0; i < points; i++) {
 						coords['player' + (player + 1)].push({
-							x: start.x + Math.sin(current) * (radius - dimen.trackWidth * player),
-							y: start.y + radius + Math.cos(current) * (radius - dimen.trackWidth * player)
+							x: dimen.coords.rightCurve.x + Math.sin(current) * (radius - dimen.trackWidth * player),
+							y: dimen.coords.rightCurve.y + Math.cos(current) * (radius - dimen.trackWidth * player)
 						});
 						current -= step;
 					}
@@ -94,30 +120,22 @@
 				for (var player = 0; player < 3; player++) {
 					for (var i = 35; i >= 0; i--) {
 						coords['player' + (player + 1)].push({
-							x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.spaceWidth * i + dimen.spaceWidth / 2,
-							y: dimen.padding * 3 + dimen.section.height * 2 + dimen.trackWidth * (2 - player) + dimen.trackWidth / 2
+							x: dimen.coords.secondStraight.x + dimen.spaceWidth * i + dimen.spaceWidth / 2,
+							y: dimen.coords.secondStraight.y + dimen.trackWidth * (2 - player) + dimen.trackWidth / 2
 						});
 					}
 				}
 			};
 			var addLeftCurve = function() {
-				var start = {
-					x: dimen.padding + dimen.section.height + dimen.padding / 2,
-					y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth / 2
-				};
-				var end = {
-					x: start.x,
-					y: dimen.padding * 3 + dimen.section.height * 3 - dimen.trackWidth / 2
-				};
 				var points = 5;
 				var step = Math.PI * 2 / (points * 2);
 				for (var player = 0; player < 3; player++) {
-					var radius = (end.y - start.y) / 2;
+					var radius = dimen.coords.leftCurve.radius;
 					var current = -step / 2;
 					for (var i = 0; i < points; i++) {
 						coords['player' + (player + 1)].push({
-							x: start.x + Math.sin(current) * (radius - dimen.trackWidth * player),
-							y: start.y + radius + Math.cos(current) * (radius - dimen.trackWidth * player)
+							x: dimen.coords.leftCurve.x + Math.sin(current) * (radius - dimen.trackWidth * player),
+							y: dimen.coords.leftCurve.y + Math.cos(current) * (radius - dimen.trackWidth * player)
 						});
 						current -= step;
 					}
@@ -127,8 +145,8 @@
 				for (var player = 0; player < 3; player++) {
 					for (var i = 0; i < 36; i++) {
 						coords['player' + (player + 1)].push({
-							x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.spaceWidth * i + dimen.spaceWidth / 2,
-							y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth * player + dimen.trackWidth / 2
+							x: dimen.coords.thirdStraight.x + dimen.spaceWidth * i + dimen.spaceWidth / 2,
+							y: dimen.coords.thirdStraight.y + dimen.trackWidth * player + dimen.trackWidth / 2
 						});
 					}
 				}
@@ -151,14 +169,14 @@
 			var drawStraightTracks = function() {
 				for(var section = 0; section < 3; section++) {
 					for (var track = 0; track < 3; track++) {
-						var x = dimen.padding + dimen.section.height + dimen.padding / 2;
+						var x = dimen.coords.firstStraight.x;
 						var y = dimen.padding + (dimen.padding * section) + (dimen.section.height * section) + (dimen.trackWidth * track);
 						if (section === 2) {
 							ctx.fillStyle = theme['track' + (3 - track)];
 						} else {
 							ctx.fillStyle = theme['track' + (track + 1)];
 						}
-						var width = dimen.section.width * 7 + 1;
+						var width = dimen.coords.thirdStraight.width;
 						if (section !== 1) {
 							width += dimen.spaceWidth;
 						}
@@ -179,54 +197,37 @@
 				}
 			};
 			var drawCurvedTracks = function() {
-				var drawCurve = function(start, end, counterClockwise) {
+				var drawCurve = function(x, y, radius, counterClockwise) {
 					for (var track = 0; track < 3; track++) {
-						var radius = (end.y - start.y) / 2;
 						ctx.beginPath();
-						ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track),  Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
+						ctx.arc(x, y, radius - (dimen.trackWidth * track),  Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
 						ctx.lineWidth = dimen.trackWidth;
 						ctx.strokeStyle = theme['track' + (track + 1)];
 						ctx.stroke();
 						// close gap
 						if (track !== 2) {
 							ctx.beginPath();
-							ctx.arc(start.x, start.y + radius, radius - (dimen.trackWidth * track) - dimen.trackWidth / 2,  Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
+							ctx.arc(x, y, radius - (dimen.trackWidth * track) - dimen.trackWidth / 2,  Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
 							ctx.lineWidth = 1;
 							ctx.stroke();
 						}
 					}
 				};
 				var drawRightCurve = function() {
-					var start = {
-						x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * 7 + dimen.spaceWidth,
-						y: dimen.padding + dimen.trackWidth / 2
-					};
-					var end = {
-						x: start.x,
-						y: dimen.padding * 3 + dimen.section.height * 3 - dimen.trackWidth / 2
-					};
-					drawCurve(start, end);
+					drawCurve(dimen.coords.rightCurve.x, dimen.coords.rightCurve.y, dimen.coords.rightCurve.radius);
 				};
 				var drawLeftCurve = function() {
-					var start = {
-						x: dimen.padding + dimen.section.height + dimen.padding / 2,
-						y: dimen.padding * 2 + dimen.section.height + dimen.trackWidth / 2
-					};
-					var end = {
-						x: start.x,
-						y: dimen.padding * 3 + dimen.section.height * 3 - dimen.trackWidth / 2
-					};
-					drawCurve(start, end, true);
+					drawCurve(dimen.coords.leftCurve.x, dimen.coords.leftCurve.y, dimen.coords.leftCurve.radius, true);
 				};
 				drawRightCurve();
 				drawLeftCurve();
 			};
 			var drawStart = function() {
 				for (var track = 0; track < 3; track++) {
-					var x = dimen.padding + dimen.section.height + dimen.padding / 2 - dimen.spaceWidth * 3;
-					var y = dimen.padding + (dimen.trackWidth * track);
+					var x = dimen.coords.start.x;
+					var y = dimen.coords.start.y + dimen.trackWidth * track;
 					ctx.fillStyle = theme['track' + (track + 1)];
-					var width = dimen.spaceWidth * 2;
+					var width = dimen.coords.start.width;
 					ctx.fillRect(x, y, width, track === 2 ? dimen.trackWidth : dimen.trackWidth + 1);
 				}
 			};
@@ -235,7 +236,7 @@
 				ctx.strokeStyle = theme.background;
 				var drawVertical = function() {
 					for (var i = 0; i < 8; i++) {
-						var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * i;
+						var x = dimen.coords.firstStraight.x + dimen.section.width * i;
 						ctx.beginPath();
 						ctx.moveTo(x, 0);
 						ctx.lineTo(x, canvas.height);
@@ -243,8 +244,8 @@
 					}
 				};
 				var drawHorizontal = function() {
-					var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * 7;
-					var y = dimen.padding * 2 + dimen.section.height + dimen.section.height / 2;
+					var x = dimen.coords.rightCurve.x;
+					var y = dimen.coords.rightCurve.y;
 					ctx.beginPath();
 					ctx.moveTo(x, y);
 					ctx.lineTo(canvas.width, y);
@@ -261,23 +262,14 @@
 				var offset = theme.fontSize / 2 + theme.boardPadding / 2;
 				var drawFirstRow = function() {
 					for (var i = 1; i < 8; i++) {
-						var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * i;
-						var y = dimen.padding - offset;
+						var x = dimen.coords.firstStraight.x + dimen.section.width * i;
+						var y = dimen.coords.firstStraight.y - offset;
 						ctx.fillText(5 * i, x, y);
 					}
 				};
 				var drawCurve = function() {
-					var start = {
-						x: dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * 7 + dimen.spaceWidth - 1,
-						y: dimen.padding + dimen.trackWidth / 2
-					};
-					var end = {
-						x: start.x,
-						y: dimen.padding * 3 + dimen.section.height * 3 - dimen.trackWidth / 2
-					};
-					var radius = (end.y - start.y) / 2;
-					var x = start.x + radius + dimen.trackWidth / 2 + offset;
-					var y = start.y + radius;
+					var x = dimen.coords.rightCurve.x + dimen.coords.rightCurve.radius + dimen.trackWidth / 2 + offset;
+					var y = dimen.coords.rightCurve.y;
 					ctx.save();
 					ctx.rotate(Math.PI / 2);
 					ctx.fillText('40', y, -x);
@@ -285,15 +277,15 @@
 				};
 				var drawSecondRow = function() {
 					for (var i = 0; i < 8; i++) {
-						var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * (7 - i);
-						var y = dimen.padding * 3 + dimen.section.height * 3 + offset;
+						var x = dimen.coords.secondStraight.x + dimen.section.width * (7 - i);
+						var y = dimen.coords.secondStraight.y + dimen.section.height + offset;
 						ctx.fillText(45 + 5 * i, x, y);
 					}
 				};
 				var drawThirdRow = function() {
 					for (var i = 0; i < 8; i++) {
-						var x = dimen.padding + dimen.section.height + dimen.padding / 2 + dimen.section.width * i;
-						var y = dimen.padding * 2 + dimen.section.height - offset;
+						var x = dimen.coords.thirdStraight.x + dimen.section.width * i;
+						var y = dimen.coords.thirdStraight.y - offset;
 						ctx.fillText(85 + 5 * i, x, y);
 					}
 				};
