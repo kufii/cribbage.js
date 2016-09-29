@@ -238,7 +238,11 @@
 					for (var i = 0; i < 8; i++) {
 						var x = dimen.coords.firstStraight.x + dimen.section.width * i;
 						ctx.beginPath();
-						ctx.moveTo(x, 0);
+						ctx.moveTo(x, i === 0 ? dimen.coords.thirdStraight.y : 0);
+						if (i == 7) {
+							ctx.lineTo(x, dimen.coords.firstStraight.y + dimen.section.height);
+							ctx.moveTo(x, dimen.coords.secondStraight.y);
+						}
 						ctx.lineTo(x, canvas.height);
 						ctx.stroke();
 					}
