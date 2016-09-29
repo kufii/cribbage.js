@@ -6,7 +6,7 @@ A Cribbage board library written in JS.
 ## Usage
 Link the script and add a canvas to the HTML
 
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +23,7 @@ Link the script and add a canvas to the HTML
 
 In your JS, call the Cribbage function passing the canvas
 
-```
+```javascript
 var cribbage = Cribbage({
 	canvas: document.querySelector('#cribbage');
 });
