@@ -382,7 +382,7 @@
 			var hole;
 			for (var player = 0; player < 3; player++) {
 				if (coords['player' + (player + 1)].some(function(coord, index) {
-					if (getDistance(x, y, coord) <= dimen.holeRadius) {
+					if (getDistance(x, y, coord) <= Math.max(dimen.holeRadius, dimen.pegRadius)) {
 						hole = {
 							player: player,
 							position: index
