@@ -16,9 +16,9 @@
 
 		var defaultTheme = {
 			background: 'white',
-			player1: 'green',
-			player2: 'blue',
-			player3: 'red',
+			player1: '#09D209',
+			player2: '#0066FF',
+			player3: '#EC2304',
 			track1: '#646464',
 			track2: '#464646',
 			track3: '#282828',
