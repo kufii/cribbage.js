@@ -28,7 +28,8 @@
 			fontColor: 'black',
 			holePadding: 8,
 			pegPadding: 6,
-			boardPadding: 8
+			boardPadding: 8,
+			drawTooltips: true
 		};
 		var theme = {};
 		var dimen = {};
@@ -492,9 +493,17 @@
 
 		canvas.onmousemove = function(e) {
 			var bounds = canvas.getBoundingClientRect();
-			if (getHole(e.clientX - bounds.left, e.clientY - bounds.top)) {
+			var hole = getHole(e.clientX - bounds.left, e.clientY - bounds.top);
+			if (hole) {
+				if (theme.drawTooltips) {
+					var points = hole.position - 1 - getScore(hole.player);
+					if (points > 0) {
+						canvas.title = '+' + points;
+					}
+				}
 				canvas.style.cursor = 'pointer';
 			} else {
+				canvas.title = '';
 				canvas.style.cursor = 'auto';
 			}
 		};
