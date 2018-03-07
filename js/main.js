@@ -1,52 +1,52 @@
-(function() {
+(() => {
 	'use strict';
 
-	var cribbage;
+	let cribbage;
 
-	var save = function() {
-		var pegs = [];
-		for (var i = 0; i < 3; i++) {
+	let save = function() {
+		let pegs = [];
+		for (let i = 0; i < 3; i++) {
 			pegs.push(cribbage.getPegPositions(i));
 		}
 		localStorage.setItem('pegs', JSON.stringify(pegs));
 	};
 
-	var load = function() {
-		var data = localStorage.getItem('pegs');
+	let load = function() {
+		let data = localStorage.getItem('pegs');
 		if (data) {
 			return JSON.parse(data);
 		}
 	};
 
-	var clearData = function() {
+	let clearData = function() {
 		localStorage.removeItem('pegs');
 	};
 
 	cribbage = Cribbage({
 		canvas: document.querySelector('#cribbage'),
-		onmove: function() {
+		onmove() {
 			save();
 		},
-		onwin: function(player) {
-			alert('Player ' + (player + 1) + ' wins!');
+		onwin(player) {
+			alert(`Player ${player + 1} wins!`);
 			cribbage.disable();
 			cribbage.updateTheme({
-				background: cribbage.getTheme('player' + (player + 1))
+				background: cribbage.getTheme(`player${player + 1}`)
 			});
 			clearData();
 		}
 	});
 
-	document.querySelector('#reset').onclick = function(e) {
+	document.querySelector('#reset').onclick = () => {
 		cribbage.enable();
 		cribbage.setTheme();
 		cribbage.reset();
 		clearData();
 	};
 
-	var data = load();
+	let data = load();
 	if (data) {
-		for (var i = 0; i < data.length; i++) {
+		for (let i = 0; i < data.length; i++) {
 			cribbage.move(i, data[i].old);
 			cribbage.move(i, data[i].current);
 		}
