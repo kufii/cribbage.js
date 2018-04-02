@@ -435,14 +435,14 @@
 		};
 
 		const setTheme = function(obj = {}) {
-			theme = Object.assign(obj, defaultTheme);
+			theme = Object.assign(defaultTheme, obj);
 			calculateDimensions();
 			calculateCoords();
 			draw();
 		};
 
 		const updateTheme = function(obj = {}) {
-			theme = Object.assign(obj, theme);
+			theme = Object.assign(theme, obj);
 			calculateDimensions();
 			calculateCoords();
 			draw();

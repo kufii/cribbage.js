@@ -1,9 +1,7 @@
 (() => {
 	'use strict';
 
-	let cribbage;
-
-	let save = function() {
+	const save = function() {
 		let pegs = [];
 		for (let i = 0; i < 3; i++) {
 			pegs.push(cribbage.getPegPositions(i));
@@ -11,18 +9,18 @@
 		localStorage.setItem('pegs', JSON.stringify(pegs));
 	};
 
-	let load = function() {
+	const load = function() {
 		let data = localStorage.getItem('pegs');
 		if (data) {
 			return JSON.parse(data);
 		}
 	};
 
-	let clearData = function() {
+	const clearData = function() {
 		localStorage.removeItem('pegs');
 	};
 
-	cribbage = Cribbage({
+	const cribbage = Cribbage({
 		canvas: document.querySelector('#cribbage'),
 		onmove() {
 			save();
@@ -44,11 +42,11 @@
 		clearData();
 	};
 
-	let data = load();
-	if (data) {
-		for (let i = 0; i < data.length; i++) {
-			cribbage.move(i, data[i].old);
-			cribbage.move(i, data[i].current);
-		}
+	let pegs = load();
+	if (pegs) {
+		pegs.forEach((peg, index) => {
+			cribbage.move(index, peg.old);
+			cribbage.move(index, peg.current);
+		});
 	}
 })();
