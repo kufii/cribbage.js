@@ -434,18 +434,16 @@
 			enabled = true;
 		};
 
-		const setTheme = function(obj = {}) {
-			theme = Object.assign(defaultTheme, obj);
-			calculateDimensions();
-			calculateCoords();
-			draw();
-		};
-
 		const updateTheme = function(obj = {}) {
 			theme = Object.assign(theme, obj);
 			calculateDimensions();
 			calculateCoords();
 			draw();
+		};
+
+		const setTheme = function(obj) {
+			theme = defaultTheme;
+			updateTheme(obj);
 		};
 
 		const getTheme = function(property) {
