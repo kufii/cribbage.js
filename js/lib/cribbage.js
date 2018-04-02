@@ -1,14 +1,13 @@
 (() => {
 	'use strict';
 
-	window.Cribbage = function(cfg) {
-		let canvas = cfg.canvas;
+	window.Cribbage = function({ canvas, width, height, theme = {}, onmoving, onmove, onwin }) {
 		if (!canvas) {
 			canvas = document.createElement('canvas');
-			canvas.width = cfg.width;
-			canvas.height = cfg.height;
+			canvas.width = width;
+			canvas.height = height;
 			if (!canvas.width || !canvas.height) {
-				throw 'You must specify the width and height';
+				throw new Error('You must specify the width and height');
 			}
 		}
 
@@ -32,7 +31,6 @@
 			drawTooltips: true
 		};
 
-		let theme = {};
 		let dimen = {};
 		let coords = {
 			player1: [],
@@ -361,9 +359,9 @@
 		const move = function(player, position) {
 			let p = pegs[`player${player + 1}`];
 			if (p.old === position || p.new === position) return;
-			if (cfg.onmoving) {
+			if (onmoving) {
 				// allow the move to be cancelled by an onmoving event handler
-				if (cfg.onmoving(player, p.current, position)) return;
+				if (onmoving(player, p.current, position)) return;
 			}
 			if (position > p.current) {
 				p.old = p.current;
@@ -375,20 +373,16 @@
 				p.old = position;
 			}
 			draw();
-			if (cfg.onmove) {
-				cfg.onmove(player, p.old, p.current);
+			if (onmove) {
+				onmove(player, p.old, p.current);
 			}
-			if (cfg.onwin && position === 122) {
-				cfg.onwin(player);
+			if (onwin && position === 122) {
+				onwin(player);
 			}
 		};
 
 		const getPegPositions = function(player) {
-			let p = pegs[`player${player + 1}`];
-			return {
-				old: p.old,
-				current: p.current
-			};
+			return pegs[`player${player + 1}`];
 		};
 
 		const getHole = function(x, y) {
@@ -429,9 +423,7 @@
 					current: 1
 				}
 			};
-			if (!nodraw) {
-				draw();
-			}
+			if (!nodraw) draw();
 		};
 
 		const disable = function() {
@@ -442,24 +434,15 @@
 			enabled = true;
 		};
 
-		const setTheme = function(obj) {
-			if (!obj) obj = {};
-			theme = {};
-			for (let property in defaultTheme) {
-				theme[property] = (typeof obj[property] !== 'undefined') ? obj[property] : defaultTheme[property];
-			}
+		const setTheme = function(obj = {}) {
+			theme = Object.assign(obj, defaultTheme);
 			calculateDimensions();
 			calculateCoords();
 			draw();
 		};
 
-		const updateTheme = function(obj) {
-			if (!obj) obj = {};
-			for (let property in obj) {
-				if (typeof defaultTheme[property] !== 'undefined') {
-					theme[property] = obj[property];
-				}
-			}
+		const updateTheme = function(obj = {}) {
+			theme = Object.assign(obj, theme);
 			calculateDimensions();
 			calculateCoords();
 			draw();
@@ -480,7 +463,7 @@
 
 		const init = function() {
 			reset(true);
-			setTheme(cfg.theme);
+			setTheme(theme);
 		};
 		init();
 
