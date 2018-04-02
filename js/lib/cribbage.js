@@ -348,7 +348,7 @@
 			drawTrack();
 			drawHoles();
 			drawPegs();
-		}
+		};
 
 		const getDistance = function(x, y, coord) {
 			let xdiff = Math.pow(Math.abs(coord.x - x), 2);
@@ -449,11 +449,7 @@
 		};
 
 		const getTheme = function(property) {
-			if (property) {
-				return theme[property];
-			} else {
-				return theme;
-			}
+			return property ? theme[property] : theme;
 		};
 
 		const getScore = function(player) {
