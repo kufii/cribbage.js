@@ -175,180 +175,180 @@
 			addThirdStraight();
 		};
 
-		const drawBackground = function() {
-			ctx.fillStyle = theme.background;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
-		};
+		const draw = function() {
+			const drawBackground = function() {
+				ctx.fillStyle = theme.background;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+			};
 
-		const drawTrack = function() {
-			const drawStraightTracks = function() {
-				for (let section = 0; section < 3; section++) {
+			const drawTrack = function() {
+				const drawStraightTracks = function() {
+					for (let section = 0; section < 3; section++) {
+						for (let track = 0; track < 3; track++) {
+							let x = dimen.coords.firstStraight.x;
+							let y = dimen.padding + (dimen.padding * section) + (dimen.section.height * section) + (dimen.trackWidth * track);
+							if (section === 2) {
+								ctx.fillStyle = theme[`track${3 - track}`];
+							} else {
+								ctx.fillStyle = theme[`track${track + 1}`];
+							}
+							let width = dimen.coords.thirdStraight.width;
+							if (section !== 1) {
+								width += dimen.spaceWidth;
+							}
+
+							// fill gaps;
+							if (section === 0) {
+								width += 1;
+							} else if (section === 1) {
+								width += 1;
+								x -= 1;
+							} else if (section === 2) {
+								width += 2;
+								x -= 1;
+							}
+
+							ctx.fillRect(x, y, width, track === 2 ? dimen.trackWidth : dimen.trackWidth + 1);
+						}
+					}
+				};
+				const drawCurvedTracks = function() {
+					const drawCurve = function(x, y, radius, counterClockwise) {
+						for (let track = 0; track < 3; track++) {
+							ctx.beginPath();
+							ctx.arc(x, y, radius - (dimen.trackWidth * track), Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
+							ctx.lineWidth = dimen.trackWidth;
+							ctx.strokeStyle = theme[`track${track + 1}`];
+							ctx.stroke();
+							// close gap
+							if (track !== 2) {
+								ctx.beginPath();
+								ctx.arc(x, y, radius - (dimen.trackWidth * track) - (dimen.trackWidth / 2), Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
+								ctx.lineWidth = 1;
+								ctx.stroke();
+							}
+						}
+					};
+					const drawRightCurve = function() {
+						drawCurve(dimen.coords.rightCurve.x, dimen.coords.rightCurve.y, dimen.coords.rightCurve.radius);
+					};
+					const drawLeftCurve = function() {
+						drawCurve(dimen.coords.leftCurve.x, dimen.coords.leftCurve.y, dimen.coords.leftCurve.radius, true);
+					};
+					drawRightCurve();
+					drawLeftCurve();
+				};
+				const drawStart = function() {
 					for (let track = 0; track < 3; track++) {
-						let x = dimen.coords.firstStraight.x;
-						let y = dimen.padding + (dimen.padding * section) + (dimen.section.height * section) + (dimen.trackWidth * track);
-						if (section === 2) {
-							ctx.fillStyle = theme[`track${3 - track}`];
-						} else {
-							ctx.fillStyle = theme[`track${track + 1}`];
-						}
-						let width = dimen.coords.thirdStraight.width;
-						if (section !== 1) {
-							width += dimen.spaceWidth;
-						}
-
-						// fill gaps;
-						if (section === 0) {
-							width += 1;
-						} else if (section === 1) {
-							width += 1;
-							x -= 1;
-						} else if (section === 2) {
-							width += 2;
-							x -= 1;
-						}
-
+						let x = dimen.coords.start.x;
+						let y = dimen.coords.start.y + (dimen.trackWidth * track);
+						ctx.fillStyle = theme[`track${track + 1}`];
+						let width = dimen.coords.start.width;
 						ctx.fillRect(x, y, width, track === 2 ? dimen.trackWidth : dimen.trackWidth + 1);
 					}
-				}
-			};
-			const drawCurvedTracks = function() {
-				const drawCurve = function(x, y, radius, counterClockwise) {
-					for (let track = 0; track < 3; track++) {
-						ctx.beginPath();
-						ctx.arc(x, y, radius - (dimen.trackWidth * track), Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
-						ctx.lineWidth = dimen.trackWidth;
-						ctx.strokeStyle = theme[`track${track + 1}`];
-						ctx.stroke();
-						// close gap
-						if (track !== 2) {
+				};
+				const drawSeperators = function() {
+					ctx.lineWidth = 1;
+					ctx.strokeStyle = theme.background;
+					const drawVertical = function() {
+						for (let i = 0; i < 8; i++) {
+							let x = dimen.coords.firstStraight.x + (dimen.section.width * i);
 							ctx.beginPath();
-							ctx.arc(x, y, radius - (dimen.trackWidth * track) - (dimen.trackWidth / 2), Math.PI * 1.5, Math.PI * 0.5, counterClockwise);
-							ctx.lineWidth = 1;
+							ctx.moveTo(x, i === 0 ? dimen.coords.thirdStraight.y : 0);
+							if (i === 7) {
+								ctx.lineTo(x, dimen.coords.firstStraight.y + dimen.section.height);
+								ctx.moveTo(x, dimen.coords.secondStraight.y);
+							}
+							ctx.lineTo(x, canvas.height);
 							ctx.stroke();
 						}
-					}
-				};
-				const drawRightCurve = function() {
-					drawCurve(dimen.coords.rightCurve.x, dimen.coords.rightCurve.y, dimen.coords.rightCurve.radius);
-				};
-				const drawLeftCurve = function() {
-					drawCurve(dimen.coords.leftCurve.x, dimen.coords.leftCurve.y, dimen.coords.leftCurve.radius, true);
-				};
-				drawRightCurve();
-				drawLeftCurve();
-			};
-			const drawStart = function() {
-				for (let track = 0; track < 3; track++) {
-					let x = dimen.coords.start.x;
-					let y = dimen.coords.start.y + (dimen.trackWidth * track);
-					ctx.fillStyle = theme[`track${track + 1}`];
-					let width = dimen.coords.start.width;
-					ctx.fillRect(x, y, width, track === 2 ? dimen.trackWidth : dimen.trackWidth + 1);
-				}
-			};
-			const drawSeperators = function() {
-				ctx.lineWidth = 1;
-				ctx.strokeStyle = theme.background;
-				const drawVertical = function() {
-					for (let i = 0; i < 8; i++) {
-						let x = dimen.coords.firstStraight.x + (dimen.section.width * i);
+					};
+					const drawHorizontal = function() {
+						let x = dimen.coords.rightCurve.x;
+						let y = dimen.coords.rightCurve.y;
 						ctx.beginPath();
-						ctx.moveTo(x, i === 0 ? dimen.coords.thirdStraight.y : 0);
-						if (i === 7) {
-							ctx.lineTo(x, dimen.coords.firstStraight.y + dimen.section.height);
-							ctx.moveTo(x, dimen.coords.secondStraight.y);
-						}
-						ctx.lineTo(x, canvas.height);
+						ctx.moveTo(x, y);
+						ctx.lineTo(canvas.width, y);
 						ctx.stroke();
-					}
+					};
+					drawVertical();
+					drawHorizontal();
 				};
-				const drawHorizontal = function() {
-					let x = dimen.coords.rightCurve.x;
-					let y = dimen.coords.rightCurve.y;
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					ctx.lineTo(canvas.width, y);
-					ctx.stroke();
+				const drawMarkers = function() {
+					ctx.font = `${theme.fontSize}px ${theme.fontFamily}`;
+					ctx.fillStyle = theme.fontColor;
+					ctx.textAlign = 'center';
+					ctx.textBaseline='middle';
+					const offset = (theme.fontSize / 2) + (theme.boardPadding / 2);
+					const drawFirstRow = function() {
+						for (let i = 1; i < 8; i++) {
+							let x = dimen.coords.firstStraight.x + (dimen.section.width * i);
+							let y = dimen.coords.firstStraight.y - offset;
+							ctx.fillText(5 * i, x, y);
+						}
+					};
+					const drawCurve = function() {
+						let x = dimen.coords.rightCurve.x + dimen.coords.rightCurve.radius + (dimen.trackWidth / 2) + offset;
+						let y = dimen.coords.rightCurve.y;
+						ctx.save();
+						ctx.rotate(Math.PI / 2);
+						ctx.fillText('40', y, -x);
+						ctx.restore();
+					};
+					const drawSecondRow = function() {
+						for (let i = 0; i < 8; i++) {
+							let x = dimen.coords.secondStraight.x + (dimen.section.width * (7 - i));
+							let y = dimen.coords.secondStraight.y + dimen.section.height + offset;
+							ctx.fillText(45 + (5 * i), x, y);
+						}
+					};
+					const drawThirdRow = function() {
+						for (let i = 0; i < 8; i++) {
+							let x = dimen.coords.thirdStraight.x + (dimen.section.width * i);
+							let y = dimen.coords.thirdStraight.y - offset;
+							ctx.fillText(85 + (5 * i), x, y);
+						}
+					};
+					drawFirstRow();
+					drawCurve();
+					drawSecondRow();
+					drawThirdRow();
 				};
-				drawVertical();
-				drawHorizontal();
+				drawStraightTracks();
+				drawCurvedTracks();
+				drawStart();
+				drawSeperators();
+				drawMarkers();
 			};
-			const drawMarkers = function() {
-				ctx.font = `${theme.fontSize}px ${theme.fontFamily}`;
-				ctx.fillStyle = theme.fontColor;
-				ctx.textAlign = 'center';
-				ctx.textBaseline='middle';
-				const offset = (theme.fontSize / 2) + (theme.boardPadding / 2);
-				const drawFirstRow = function() {
-					for (let i = 1; i < 8; i++) {
-						let x = dimen.coords.firstStraight.x + (dimen.section.width * i);
-						let y = dimen.coords.firstStraight.y - offset;
-						ctx.fillText(5 * i, x, y);
-					}
-				};
-				const drawCurve = function() {
-					let x = dimen.coords.rightCurve.x + dimen.coords.rightCurve.radius + (dimen.trackWidth / 2) + offset;
-					let y = dimen.coords.rightCurve.y;
-					ctx.save();
-					ctx.rotate(Math.PI / 2);
-					ctx.fillText('40', y, -x);
-					ctx.restore();
-				};
-				const drawSecondRow = function() {
-					for (let i = 0; i < 8; i++) {
-						let x = dimen.coords.secondStraight.x + (dimen.section.width * (7 - i));
-						let y = dimen.coords.secondStraight.y + dimen.section.height + offset;
-						ctx.fillText(45 + (5 * i), x, y);
-					}
-				};
-				const drawThirdRow = function() {
-					for (let i = 0; i < 8; i++) {
-						let x = dimen.coords.thirdStraight.x + (dimen.section.width * i);
-						let y = dimen.coords.thirdStraight.y - offset;
-						ctx.fillText(85 + (5 * i), x, y);
-					}
-				};
-				drawFirstRow();
-				drawCurve();
-				drawSecondRow();
-				drawThirdRow();
-			};
-			drawStraightTracks();
-			drawCurvedTracks();
-			drawStart();
-			drawSeperators();
-			drawMarkers();
-		};
 
-		const drawHoles = function() {
-			for (let player in coords) {
-				coords[player].forEach(coord => {
-					ctx.beginPath();
-					ctx.fillStyle = theme.hole;
-					ctx.arc(coord.x, coord.y, dimen.holeRadius, 0, 360);
-					ctx.fill();
-				});
-			}
-		};
-
-		const drawPegs = function() {
-			for (let player in pegs) {
-				for (let peg in pegs[player]) {
-					let coord = coords[player][pegs[player][peg]];
-					ctx.beginPath();
-					ctx.fillStyle = theme[player];
-					ctx.arc(coord.x, coord.y, dimen.pegRadius, 0, 360);
-					ctx.fill();
+			const drawHoles = function() {
+				for (let player in coords) {
+					coords[player].forEach(coord => {
+						ctx.beginPath();
+						ctx.fillStyle = theme.hole;
+						ctx.arc(coord.x, coord.y, dimen.holeRadius, 0, 360);
+						ctx.fill();
+					});
 				}
-			}
-		};
+			};
 
-		const draw = function() {
+			const drawPegs = function() {
+				for (let player in pegs) {
+					for (let peg in pegs[player]) {
+						let coord = coords[player][pegs[player][peg]];
+						ctx.beginPath();
+						ctx.fillStyle = theme[player];
+						ctx.arc(coord.x, coord.y, dimen.pegRadius, 0, 360);
+						ctx.fill();
+					}
+				}
+			};
+
 			drawBackground();
 			drawTrack();
 			drawHoles();
 			drawPegs();
-		};
+		}
 
 		const getDistance = function(x, y, coord) {
 			let xdiff = Math.pow(Math.abs(coord.x - x), 2);
