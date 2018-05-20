@@ -15,9 +15,9 @@
 
 		const defaultTheme = {
 			background: 'white',
-			player1: '#09D209',
-			player2: '#0066FF',
-			player3: '#EC2304',
+			player1: '#09d209',
+			player2: '#0066ff',
+			player3: '#ec2304',
 			track1: '#646464',
 			track2: '#464646',
 			track3: '#282828',
@@ -31,8 +31,8 @@
 			drawTooltips: true
 		};
 
-		let dimen = {};
-		let coords = {
+		const dimen = {};
+		const coords = {
 			player1: [],
 			player2: [],
 			player3: []
@@ -43,16 +43,16 @@
 
 		const calculateDimensions = function() {
 			dimen.padding = theme.fontSize + theme.boardPadding;
-			let height = canvas.height - (dimen.padding * 4);
-			let curveWidth = (height / 3) + (dimen.padding / 2) + (height / 2) + dimen.padding;
-			let width = canvas.width - curveWidth - ((dimen.padding * 2));
+			const height = canvas.height - (dimen.padding * 4);
+			const curveWidth = (height / 3) + (dimen.padding / 2) + (height / 2) + dimen.padding;
+			const width = canvas.width - curveWidth - ((dimen.padding * 2));
 			dimen.section = {
 				width: Math.floor(width / 36 * 5),
 				height: Math.floor(height / 3)
 			};
 			dimen.spaceWidth = dimen.section.width / 5;
 			dimen.trackWidth = dimen.section.height / 3;
-			let maxRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2;
+			const maxRadius = Math.min(dimen.spaceWidth, dimen.trackWidth) / 2;
 			dimen.holeRadius = Math.max(0, maxRadius - theme.holePadding);
 			dimen.pegRadius = Math.max(0, maxRadius - theme.pegPadding);
 
@@ -92,7 +92,7 @@
 
 		const calculateCoords = function() {
 			const clearCoords = function() {
-				for (let player in coords) {
+				for (const player in coords) {
 					coords[player] = [];
 				}
 			};
@@ -117,10 +117,10 @@
 				}
 			};
 			const addRightCurve = function() {
-				let points = 8;
-				let step = Math.PI * 2 / (points * 2);
+				const points = 8;
+				const step = Math.PI * 2 / (points * 2);
 				for (let player = 0; player < 3; player++) {
-					let radius = dimen.coords.rightCurve.radius;
+					const radius = dimen.coords.rightCurve.radius;
 					let current = (step * points) - (step / 2);
 					for (let i = 0; i < points; i++) {
 						coords[`player${player + 1}`].push({
@@ -142,10 +142,10 @@
 				}
 			};
 			const addLeftCurve = function() {
-				let points = 5;
-				let step = Math.PI * 2 / (points * 2);
+				const points = 5;
+				const step = Math.PI * 2 / (points * 2);
 				for (let player = 0; player < 3; player++) {
-					let radius = dimen.coords.leftCurve.radius;
+					const radius = dimen.coords.leftCurve.radius;
 					let current = -step / 2;
 					for (let i = 0; i < points; i++) {
 						coords[`player${player + 1}`].push({
@@ -186,7 +186,7 @@
 					for (let section = 0; section < 3; section++) {
 						for (let track = 0; track < 3; track++) {
 							let x = dimen.coords.firstStraight.x;
-							let y = dimen.padding + (dimen.padding * section) + (dimen.section.height * section) + (dimen.trackWidth * track);
+							const y = dimen.padding + (dimen.padding * section) + (dimen.section.height * section) + (dimen.trackWidth * track);
 							if (section === 2) {
 								ctx.fillStyle = theme[`track${3 - track}`];
 							} else {
@@ -240,10 +240,10 @@
 				};
 				const drawStart = function() {
 					for (let track = 0; track < 3; track++) {
-						let x = dimen.coords.start.x;
-						let y = dimen.coords.start.y + (dimen.trackWidth * track);
+						const x = dimen.coords.start.x;
+						const y = dimen.coords.start.y + (dimen.trackWidth * track);
 						ctx.fillStyle = theme[`track${track + 1}`];
-						let width = dimen.coords.start.width;
+						const width = dimen.coords.start.width;
 						ctx.fillRect(x, y, width, track === 2 ? dimen.trackWidth : dimen.trackWidth + 1);
 					}
 				};
@@ -252,7 +252,7 @@
 					ctx.strokeStyle = theme.background;
 					const drawVertical = function() {
 						for (let i = 0; i < 8; i++) {
-							let x = dimen.coords.firstStraight.x + (dimen.section.width * i);
+							const x = dimen.coords.firstStraight.x + (dimen.section.width * i);
 							ctx.beginPath();
 							ctx.moveTo(x, i === 0 ? dimen.coords.thirdStraight.y : 0);
 							if (i === 7) {
@@ -264,8 +264,8 @@
 						}
 					};
 					const drawHorizontal = function() {
-						let x = dimen.coords.rightCurve.x;
-						let y = dimen.coords.rightCurve.y;
+						const x = dimen.coords.rightCurve.x;
+						const y = dimen.coords.rightCurve.y;
 						ctx.beginPath();
 						ctx.moveTo(x, y);
 						ctx.lineTo(canvas.width, y);
@@ -282,14 +282,14 @@
 					const offset = (theme.fontSize / 2) + (theme.boardPadding / 2);
 					const drawFirstRow = function() {
 						for (let i = 1; i < 8; i++) {
-							let x = dimen.coords.firstStraight.x + (dimen.section.width * i);
-							let y = dimen.coords.firstStraight.y - offset;
+							const x = dimen.coords.firstStraight.x + (dimen.section.width * i);
+							const y = dimen.coords.firstStraight.y - offset;
 							ctx.fillText(5 * i, x, y);
 						}
 					};
 					const drawCurve = function() {
-						let x = dimen.coords.rightCurve.x + dimen.coords.rightCurve.radius + (dimen.trackWidth / 2) + offset;
-						let y = dimen.coords.rightCurve.y;
+						const x = dimen.coords.rightCurve.x + dimen.coords.rightCurve.radius + (dimen.trackWidth / 2) + offset;
+						const y = dimen.coords.rightCurve.y;
 						ctx.save();
 						ctx.rotate(Math.PI / 2);
 						ctx.fillText('40', y, -x);
@@ -297,15 +297,15 @@
 					};
 					const drawSecondRow = function() {
 						for (let i = 0; i < 8; i++) {
-							let x = dimen.coords.secondStraight.x + (dimen.section.width * (7 - i));
-							let y = dimen.coords.secondStraight.y + dimen.section.height + offset;
+							const x = dimen.coords.secondStraight.x + (dimen.section.width * (7 - i));
+							const y = dimen.coords.secondStraight.y + dimen.section.height + offset;
 							ctx.fillText(45 + (5 * i), x, y);
 						}
 					};
 					const drawThirdRow = function() {
 						for (let i = 0; i < 8; i++) {
-							let x = dimen.coords.thirdStraight.x + (dimen.section.width * i);
-							let y = dimen.coords.thirdStraight.y - offset;
+							const x = dimen.coords.thirdStraight.x + (dimen.section.width * i);
+							const y = dimen.coords.thirdStraight.y - offset;
 							ctx.fillText(85 + (5 * i), x, y);
 						}
 					};
@@ -322,7 +322,7 @@
 			};
 
 			const drawHoles = function() {
-				for (let player in coords) {
+				for (const player in coords) {
 					coords[player].forEach(coord => {
 						ctx.beginPath();
 						ctx.fillStyle = theme.hole;
@@ -333,9 +333,9 @@
 			};
 
 			const drawPegs = function() {
-				for (let player in pegs) {
-					for (let peg in pegs[player]) {
-						let coord = coords[player][pegs[player][peg]];
+				for (const player in pegs) {
+					for (const peg in pegs[player]) {
+						const coord = coords[player][pegs[player][peg]];
 						ctx.beginPath();
 						ctx.fillStyle = theme[player];
 						ctx.arc(coord.x, coord.y, dimen.pegRadius, 0, 360);
@@ -351,13 +351,13 @@
 		};
 
 		const getDistance = function(x, y, coord) {
-			let xdiff = Math.pow(Math.abs(coord.x - x), 2);
-			let ydiff = Math.pow(Math.abs(coord.y - y), 2);
+			const xdiff = Math.pow(Math.abs(coord.x - x), 2);
+			const ydiff = Math.pow(Math.abs(coord.y - y), 2);
 			return Math.sqrt(xdiff + ydiff);
 		};
 
 		const move = function(player, position) {
-			let p = pegs[`player${player + 1}`];
+			const p = pegs[`player${player + 1}`];
 			if (p.old === position || p.new === position) return;
 			if (onmoving) {
 				// allow the move to be cancelled by an onmoving event handler
@@ -402,7 +402,7 @@
 		};
 
 		const handleClick = function(x, y) {
-			let hole = getHole(x, y);
+			const hole = getHole(x, y);
 			if (hole) {
 				move(hole.player, hole.position);
 			}
@@ -451,7 +451,7 @@
 		};
 
 		const getScore = function(player) {
-			let p = pegs[`player${player + 1}`];
+			const p = pegs[`player${player + 1}`];
 			return Math.max(0, p.current - 1);
 		};
 
@@ -463,17 +463,17 @@
 
 		canvas.onclick = function(e) {
 			if (enabled) {
-				let bounds = canvas.getBoundingClientRect();
+				const bounds = canvas.getBoundingClientRect();
 				handleClick(e.clientX - bounds.left, e.clientY - bounds.top);
 			}
 		};
 
 		canvas.onmousemove = function(e) {
-			let bounds = canvas.getBoundingClientRect();
-			let hole = getHole(e.clientX - bounds.left, e.clientY - bounds.top);
+			const bounds = canvas.getBoundingClientRect();
+			const hole = getHole(e.clientX - bounds.left, e.clientY - bounds.top);
 			if (hole) {
 				if (theme.drawTooltips) {
-					let points = hole.position - 1 - getScore(hole.player);
+					const points = hole.position - 1 - getScore(hole.player);
 					if (points > 0) {
 						canvas.title = `+${points}`;
 					}

@@ -2,7 +2,7 @@
 	'use strict';
 
 	const save = function() {
-		let pegs = [];
+		const pegs = [];
 		for (let i = 0; i < 3; i++) {
 			pegs.push(cribbage.getPegPositions(i));
 		}
@@ -10,7 +10,7 @@
 	};
 
 	const load = function() {
-		let data = localStorage.getItem('pegs');
+		const data = localStorage.getItem('pegs');
 		if (data) {
 			return JSON.parse(data);
 		}
@@ -42,7 +42,7 @@
 		clearData();
 	};
 
-	let pegs = load();
+	const pegs = load();
 	if (pegs) {
 		pegs.forEach((peg, index) => {
 			cribbage.move(index, peg.old);
